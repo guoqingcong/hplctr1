@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人作品集</title>
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0a1628;
+      color: #ccd6f6;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: #64ffda; text-decoration: none; transition: color .3s; }
+    a:hover { color: #45e0be; }
+    img { max-width: 100%; display: block; }
+    ::selection { background: #64ffda; color: #0a1628; }
+
+    /* ===== Utility ===== */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* ===== Navigation ===== */
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+      background: rgba(10, 22, 40, .85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(100, 255, 218, .08);
+    }
+    nav .container {
+      display: flex; justify-content: space-between; align-items: center;
+      height: 64px;
+    }
+    .logo {
+      font-size: 1.35rem; font-weight: 700;
+      color: #64ffda; letter-spacing: -.5px;
+    }
+    .logo span { color: #ccd6f6; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-size: .9rem; color: #8892b0; font-weight: 500;
+      position: relative; padding-bottom: 2px;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 2px; background: #64ffda;
+      transition: width .3s;
+    }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a:hover { color: #64ffda; }
+
+    /* Hamburger */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px; cursor: pointer;
+      background: none; border: none; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 26px; height: 2px;
+      background: #ccd6f6; border-radius: 2px;
+      transition: .3s;
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding-top: 64px;
+    }
+    .hero-content { max-width: 700px; }
+    .hero-greeting {
+      font-size: .95rem; color: #64ffda; font-weight: 500;
+      margin-bottom: 12px; letter-spacing: 1px;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 700; color: #e6f1ff; line-height: 1.1;
+      margin-bottom: 10px;
+    }
+    .hero h2 {
+      font-size: clamp(1.2rem, 3.5vw, 2.4rem);
+      font-weight: 600; color: #8892b0;
+      margin-bottom: 24px;
+    }
+    .hero p {
+      font-size: 1.05rem; color: #8892b0;
+      max-width: 540px; margin-bottom: 36px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 14px 32px; border-radius: 6px;
+      font-weight: 600; font-size: .95rem;
+      cursor: pointer; transition: all .3s; border: none;
+    }
+    .btn-primary {
+      background: transparent; color: #64ffda;
+      border: 1px solid #64ffda;
+    }
+    .btn-primary:hover {
+      background: rgba(100, 255, 218, .1);
+      box-shadow: 0 0 20px rgba(100, 255, 218, .15);
+      transform: translateY(-2px);
+    }
+
+    /* ===== Section Shared ===== */
+    section { padding: 100px 0; }
+    .section-title {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700; color: #e6f1ff;
+      margin-bottom: 48px; display: flex; align-items: center; gap: 16px;
+    }
+    .section-title::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(to right, rgba(100,255,218,.3), transparent);
+    }
+    .section-number {
+      color: #64ffda; font-size: 1.1rem; font-weight: 400;
+    }
+
+    /* ===== About ===== */
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+      align-items: center;
+    }
+    .about-text p { color: #8892b0; margin-bottom: 16px; font-size: 1rem; }
+    .about-text p:last-child { margin-bottom: 0; }
+    .about-avatar {
+      position: relative; width: 280px; height: 280px;
+      margin: 0 auto;
+    }
+    .about-avatar::after {
+      content: ''; position: absolute; top: 14px; left: 14px;
+      width: 100%; height: 100%;
+      border: 2px solid #64ffda; border-radius: 12px;
+      transition: .3s; z-index: -1;
+    }
+    .about-avatar:hover::after { top: 8px; left: 8px; }
+    .about-avatar img {
+      width: 100%; height: 100%; object-fit: cover;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #1a2d50, #0a1628);
+      display: flex; align-items: center; justify-content: center;
+      color: #64ffda; font-size: 5rem;
+    }
+
+    /* ===== Skills ===== */
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 20px;
+    }
+    .skill-card {
+      background: rgba(100, 255, 218, .04);
+      border: 1px solid rgba(100, 255, 218, .1);
+      border-radius: 10px; padding: 24px 16px;
+      text-align: center; transition: all .3s;
+      cursor: default;
+    }
+    .skill-card:hover {
+      background: rgba(100, 255, 218, .08);
+      border-color: rgba(100, 255, 218, .3);
+      transform: translateY(-4px);
+    }
+    .skill-icon {
+      font-size: 2rem; margin-bottom: 10px; display: block;
+    }
+    .skill-name { font-size: .9rem; color: #ccd6f6; font-weight: 500; }
+
+    /* ===== Projects ===== */
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 28px;
+    }
+    .project-card {
+      background: rgba(100, 255, 218, .03);
+      border: 1px solid rgba(100, 255, 218, .08);
+      border-radius: 12px; padding: 32px;
+      transition: all .3s;
+    }
+    .project-card:hover {
+      border-color: rgba(100, 255, 218, .25);
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.3);
+    }
+    .project-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    }
+    .project-folder {
+      font-size: 1.8rem; line-height: 1;
+    }
+    .project-title { font-size: 1.2rem; font-weight: 600; color: #e6f1ff; }
+    .project-desc {
+      color: #8892b0; font-size: .92rem; margin-bottom: 18px;
+    }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .project-tag {
+      font-size: .78rem; color: #64ffda;
+      background: rgba(100,255,218,.08);
+      padding: 4px 12px; border-radius: 20px;
+    }
+
+    /* ===== Contact ===== */
+    .contact {
+      text-align: center; max-width: 600px; margin: 0 auto;
+    }
+    .contact .section-title { justify-content: center; }
+    .contact .section-title::after { display: none; }
+    .contact h3 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: #e6f1ff; margin-bottom: 16px;
+    }
+    .contact p {
+      color: #8892b0; font-size: 1rem; margin-bottom: 36px;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      text-align: center; padding: 32px 0;
+      border-top: 1px solid rgba(100, 255, 218, .06);
+    }
+    footer p { color: #495670; font-size: .85rem; }
+
+    /* ===== Scroll Animation ===== */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .nav-links {
+        position: fixed; top: 64px; right: -100%; width: 240px;
+        height: calc(100vh - 64px);
+        background: rgba(10, 22, 40, .97);
+        flex-direction: column; align-items: center;
+        justify-content: center; gap: 36px;
+        transition: right .4s; backdrop-filter: blur(12px);
+      }
+      .nav-links.open { right: 0; }
+      .hamburger { display: flex; }
+      .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+      .hamburger.active span:nth-child(2) { opacity: 0; }
+      .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+      .about-grid { grid-template-columns: 1fr; text-align: center; }
+      .about-avatar { width: 200px; height: 200px; }
+      .section-title::after { flex: .3; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .hero-content { text-align: center; }
+      .hero p { margin-left: auto; margin-right: auto; }
+    }
+
+    @media (max-width: 480px) {
+      section { padding: 64px 0; }
+      .skills-grid { grid-template-columns: repeat(2, 1fr); }
+      .about-avatar { width: 160px; height: 160px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =============== Navigation =============== -->
+  <nav>
+    <div class="container">
+      <div class="logo">&lt;<span>CC</span>/&gt;</div>
+      <button class="hamburger" aria-label="菜单" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#hero">首页</a></li>
+        <li><a href="#about">关于</a></li>
+        <li><a href="#skills">技能</a></li>
+        <li><a href="#projects">项目</a></li>
+        <li><a href="#contact">联系</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- =============== Hero =============== -->
+  <section class="hero" id="hero">
+    <div class="container hero-content">
+      <p class="hero-greeting reveal">你好，我是</p>
+      <h1 class="reveal">郭庆聪.</h1>
+      <h2 class="reveal">构建数字体验，创造美好事物。</h2>
+      <p class="reveal">
+        我是一名全栈开发者，专注于构建高性能、优雅的 Web 应用。
+        热爱将复杂问题转化为简洁、直观的用户体验。
+      </p>
+      <a href="#projects" class="btn btn-primary reveal">查看项目</a>
+    </div>
+  </section>
+
+  <!-- =============== About =============== -->
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title reveal"><span class="section-number">01.</span>关于我</h2>
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p>
+            你好！我是一名热爱技术的全栈开发者，拥有多年的 Web 开发经验。
+            从前端交互到后端架构，我热衷于用代码解决实际问题。
+          </p>
+          <p>
+            我的技术栈涵盖了 React、Vue、Node.js、TypeScript 等现代技术，
+            同时也对 UI/UX 设计充满热情。我相信优秀的产品源于对细节的极致追求。
+          </p>
+          <p>
+            工作之余，我喜欢参与开源项目、撰写技术博客，
+            并不断探索前沿技术来提升自己的开发能力。
+          </p>
+        </div>
+        <div class="about-avatar reveal">
+          <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" rx="12" fill="%231a2d50"/><text x="100" y="120" text-anchor="middle" font-size="72" fill="%2364ffda" font-weight="700">C</text></svg>' alt="头像">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== Skills =============== -->
+  <section id="skills">
+    <div class="container">
+      <h2 class="section-title reveal"><span class="section-number">02.</span>技能</h2>
+      <div class="skills-grid">
+        <div class="skill-card reveal"><span class="skill-icon">⚛️</span><span class="skill-name">React</span></div>
+        <div class="skill-card reveal"><span class="skill-icon">🟢</span><span class="skill-name">Vue</span></div>
+        <div class="skill-card reveal"><span class="skill-icon">🟨</span><span class="skill-name">JavaScript</span></div>
+        <div class="skill-card reveal"><span class="skill-icon">🔷</span><span class="skill-name">TypeScript</span></div>
+        <div class="skill-card reveal"><span class="skill-icon">🟩</span><span class="skill-name">Node.js</span></div>
+        <div class="skill-card reveal"><span class="skill-icon">⚡</span><span class="skill-name">Next.js</span></div>
+        <div class="skill-card reveal"><span class="skill-icon">🎨</span><span class="skill-name">CSS / Sass</span></div>
+        <div class="skill-card reveal"><span class="skill-icon">🐘</span><span class="skill-name">PostgreSQL</span></div>
+        <div class="skill-card reveal"><span class="skill-icon">🍃</span><span class="skill-name">MongoDB</span></div>
+        <div class="skill-card reveal"><span class="skill-icon">🐳</span><span class="skill-name">Docker</span></div>
+        <div class="skill-card reveal"><span class="skill-icon">☁️</span><span class="skill-name">AWS</span></div>
+        <div class="skill-card reveal"><span class="skill-icon">🐙</span><span class="skill-name">Git</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== Projects =============== -->
+  <section id="projects">
+    <div class="container">
+      <h2 class="section-title reveal"><span class="section-number">03.</span>项目</h2>
+      <div class="projects-grid">
+        <div class="project-card reveal">
+          <div class="project-header">
+            <span class="project-folder">📁</span>
+            <h3 class="project-title">电商平台</h3>
+          </div>
+          <p class="project-desc">
+            基于 Next.js 构建的全栈电商平台，集成支付网关、购物车、
+            用户认证和后台管理系统。
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">Next.js</span>
+            <span class="project-tag">Stripe</span>
+            <span class="project-tag">Prisma</span>
+            <span class="project-tag">PostgreSQL</span>
+          </div>
+        </div>
+        <div class="project-card reveal">
+          <div class="project-header">
+            <span class="project-folder">📁</span>
+            <h3 class="project-title">实时协作白板</h3>
+          </div>
+          <p class="project-desc">
+            支持多人实时协作的在线白板工具，提供绘图、便签、
+            图形编辑等功能，基于 WebSocket 实现毫秒级同步。
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">React</span>
+            <span class="project-tag">Socket.io</span>
+            <span class="project-tag">Canvas</span>
+            <span class="project-tag">Redis</span>
+          </div>
+        </div>
+        <div class="project-card reveal">
+          <div class="project-header">
+            <span class="project-folder">📁</span>
+            <h3 class="project-title">AI 助手平台</h3>
+          </div>
+          <p class="project-desc">
+            集成 LLM API 的智能助手平台，支持多轮对话、文档问答、
+            上下文记忆和自定义知识库。
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">FastAPI</span>
+            <span class="project-tag">LangChain</span>
+            <span class="project-tag">Redis</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== Contact =============== -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact">
+        <h2 class="section-title reveal"><span class="section-number">04.</span>联系我</h2>
+        <h3 class="reveal">一起合作？</h3>
+        <p class="reveal">
+          我目前正在寻找新的机会，无论是全职工作还是自由项目。
+          如果你有有趣的项目想聊聊，欢迎随时联系我！
+        </p>
+        <a href="mailto:hello@example.com" class="btn btn-primary reveal">发送邮件</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== Footer =============== -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 郭庆聪. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // ===== Mobile Menu Toggle =====
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navLinks.classList.toggle('open');
+    });
+    // Close menu on link click
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navLinks.classList.remove('open');
+      });
+    });
+
+    // ===== Scroll Reveal Animation =====
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -50px 0px' }
+    );
+    revealElements.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
